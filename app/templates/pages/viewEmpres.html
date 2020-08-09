@@ -1,0 +1,98 @@
+<div class="panel-header panel-header-sm">
+</div>
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">
+                        Data gathered from
+                        <a href="https://empres-i.fao.org">EMPRES-i</a>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive" style="height:600px;">
+                        <table class="table">
+                            <thead class=" text-primary">
+                            <td>Id</td>
+                            <td>Source</td>
+                            <td>Latitude</td>
+                            <td>Longitude</td>
+                            <td>Region</td>
+                            <td>Country</td>
+                            <td>Admin</td>
+                            <td>Locality Name</td>
+                            <td>Locality Quality</td>
+                            <td>Observation Date</td>
+                            <td>Reporting Date</td>
+                            <td>Quarters</td>
+                            <td>Serotypes</td>
+                            </thead>
+                            <tbody>
+                            {% for row in rows %}
+                                <tr>
+                                    <td>{{ row[0] }}</td>
+                                    <td>{{ row[1] }}</td>
+                                    <td>{{ row[2] }}</td>
+                                    <td>{{ row[3] }}</td>
+                                    <td>{{ row[4] }}</td>
+                                    <td>{{ row[5] }}</td>
+                                    <td>{{ row[6] }}</td>
+                                    <td>{{ row[7] }}</td>
+                                    <td>{{ row[8] }}</td>
+                                    <td>{{ row[9] }}</td>
+                                    <td>{{ row[10] }}</td>
+                                    <td>{{ row[11] }}</td>
+                                    <td>{{ row[12] }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive" style="height:600px;">
+                        <table class="table">
+                            <thead class=" text-primary">
+                            <td>Id</td>
+                            <td>Species Type</td>
+                            <td>Species</td>
+                            <td>At Risk</td>
+                            <td>Cases</td>
+                            <td>Deaths</td>
+                            <td>Destroyed</td>
+                            <td>Slaughtered</td>
+                            <td>Human's Gender</td>
+                            <td>Human's Age</td>
+                            <td>Humans Affected</td>
+                            <td>Human's Death</td>
+                            </thead>
+                            <tbody>
+                            {% for row in rows %}
+                                <tr>
+                                    <td>{{ row[0] }}</td>
+                                    <td>{{ row[13] }}</td>
+                                    <td>{{ row[14] }}</td>
+                                    <td>{{ row[15] }}</td>
+                                    <td>{{ row[16] }}</td>
+                                    <td>{{ row[17] }}</td>
+                                    <td>{{ row[18] }}</td>
+                                    <td>{{ row[19] }}</td>
+                                    <td>{{ row[20] }}</td>
+                                    <td>{{ row[21] }}</td>
+                                    <td>{{ row[22] }}</td>
+                                    <td>{{ row[23] }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p>Total rows: {{ rows|length }}</p>
+    </div>
+    <a href="/">Return to dashboard</a>
+</div>

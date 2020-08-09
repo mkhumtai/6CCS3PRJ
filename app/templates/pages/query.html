@@ -1,0 +1,167 @@
+<div class="panel-header panel-header-sm">
+</div>
+<div class="content">
+    <div class="form-group">
+        <form method='POST'>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="card-title" align="center"> Select Serotypes </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <input type="checkbox" onClick="toggle_lpai(this)"> All LPAI
+                                        <br>
+                                        {% for l in lpai %}
+                                            <input type="checkbox" name="lpai" value="{{ l }}">
+                                            <label>{{ l }}</label>
+                                            <br>
+                                        {% endfor %}
+                                        <br>
+                                        <script>
+                                            function toggle_lpai(source) {
+                                                checkboxes = document.getElementsByName('lpai');
+                                                for (var i = 0, n = checkboxes.length; i < n; i++) {
+                                                    checkboxes[i].checked = source.checked;
+                                                }
+                                            }
+                                        </script>
+                                    </div>
+                                    <div class="col">
+                                        <input type="checkbox" onClick="toggle_hpai(this)"> All HPAI
+                                        <br>
+                                        {% for h in hpai %}
+                                            <input type="checkbox" name="hpai" value="{{ h }}">
+                                            <label>{{ h }}</label>
+                                            <br>
+                                        {% endfor %}
+                                        <script>
+                                            function toggle_hpai(source) {
+                                                checkboxes = document.getElementsByName('hpai');
+                                                for (var i = 0, n = checkboxes.length; i < n; i++) {
+                                                    checkboxes[i].checked = source.checked;
+                                                }
+                                            }
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="card-title" align="center"> Select Reporting Date </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <label>From:</label>
+                                        <br>
+                                        <input type="date" name="from_date">
+                                        <br>
+                                        <label>To:</label>
+                                        <br>
+                                        <input type="date" name="to_date">
+                                        <br>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="card-title" align="center"> Select Region </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <input type="checkbox" onClick="toggle_region(this)"> All Regions
+                                        <br>
+                                        {% for r in region %}
+                                            <input type="checkbox" name="region" value="{{ r }}">
+                                            <label>{{ r }}</label>
+                                            <br>
+                                        {% endfor %}
+                                        <br>
+                                        <script>
+                                            function toggle_region(source) {
+                                                checkboxes = document.getElementsByName('region');
+                                                for (var i = 0, n = checkboxes.length; i < n; i++) {
+                                                    checkboxes[i].checked = source.checked;
+                                                }
+                                            }
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="card-title" align="center"> Select Species Type </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <input type="checkbox" onClick="toggle_type(this)"> All Types
+                                        <br>
+                                        {% for type in types %}
+                                            <input type="checkbox" name="type" value="{{ type }}">
+                                            <label>{{ type }}</label>
+                                            <br>
+                                        {% endfor %}
+                                        <br>
+                                        <script>
+                                            function toggle_type(source) {
+                                                checkboxes = document.getElementsByName('type');
+                                                for (var i = 0, n = checkboxes.length; i < n; i++) {
+                                                    checkboxes[i].checked = source.checked;
+                                                }
+                                            }
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Buttons -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <label>Please select ALL queries</label>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <input name='action' value="Heatmap" class="btn btn-fill btn-primary"
+                                           type="submit" action="submit">
+                                </div>
+                                <div class="col-md-2">
+                                    <input name='action' value="Markers" class="btn btn-fill btn-primary"
+                                           type="submit" action="submit">
+                                </div>
+                                <div class="col-md-2">
+                                    <input name='action' value="Table" class="btn btn-fill btn-primary"
+                                           type="submit" action="submit">
+                                </div>
+                            </div>
+                            <label>Heatmap button will display a heatmap with no interactive feature while markers
+                                will display a map with markers and interactive feature</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

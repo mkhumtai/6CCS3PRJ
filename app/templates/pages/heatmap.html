@@ -1,0 +1,71 @@
+<div class="panel-header panel-header-sm">
+</div>
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">
+                        Heatmap using Leaflet
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive" style="height:800px;">
+                            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css"
+                                  integrity="sha512-07I2e+7D8p6he1SIM+1twR5TIrhUQn9+I6yjqD53JQjFiMf8EtC93ty0/5vJTZGF8aAocvHYNEDJajGdNx1IsQ=="
+                                  crossorigin=""/>
+                            <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"
+                                    integrity="sha512-A7vV8IFfih/D732iSSKi20u/ooOfj/AGehOKq0f4vLT1Zr2Y+RX7C+w8A1gaSasGtRUZpF/NZgzSAu4/Gc41Lg=="
+                                    crossorigin=""></script>
+                            <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+                            <script src="../../static/assets/js/plugins/leaflet-heat.js"></script>
+                            <style>
+                                #map {
+                                    height: 80%;
+                                }
+                            </style>
+
+                        <div id="map"></div>
+
+                        <script type="text/javascript">
+
+                            var map = new L.Map("map", {
+                                center: new L.LatLng(36.266782, 93.049233),
+                                zoom: 3,
+                            });
+
+                            var mapLink = '<a href="http://www.esri.com/">Esri</a>';
+                            var wholink = 'i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
+
+
+                            var heat = L.heatLayer(getPoints(), {
+                                maxZoom: 5,
+                                radius: 10,
+                                blur: 15,
+                                max: 8.0,
+                                gradient: {0.2: 'blue', 0.5: 'yellow', 0.6: 'red'}
+                            }).addTo(map);
+
+                            var layer = L.tileLayer(
+                                'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                                    attribution: '&copy; ' + mapLink + ', ' + wholink,
+                                    maxZoom: 18,
+                                }).addTo(map);
+
+
+                            function getPoints() {
+                                var points = [];
+                                var i;
+                                var point = {{ data|safe }};
+                                for (i = 0; i < point.length; i++) {
+                                    points.push([point[i][2], point[i][3]])
+                                }
+                                return points
+                            }
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,106 @@
+<div class="panel-header panel-header-sm">
+</div>
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">
+                        Interactive Map
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive" style="height:800px;">
+                            <link rel="stylesheet"
+                                  href="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7.3/leaflet.css"/>
+                            <script src="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7.3/leaflet.js"></script>
+                            <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+                            <link type="text/css" href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css"
+                                  rel="stylesheet"/>
+                            <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+                            <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min.js"></script>
+                            <script src="https://rawgit.com/dwilhelm89/LeafletSlider/master/SliderControl.js"
+                                    type="text/javascript"></script>
+                            <style>
+                                #map {
+                                    height: 80%;
+                                }
+                            </style>
+
+                        <div id="map"></div>
+
+                        <script type="text/javascript">
+
+                            var map = new L.Map("map", {
+                                center: new L.LatLng(36.266782, 93.049233),
+                                zoom: 3,
+                            });;
+
+                            var mapLink = '<a href="http://www.esri.com/">Esri</a>';
+                            var wholink = 'i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
+
+
+                            var layer = L.tileLayer(
+                                'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                                    attribution: '&copy; ' + mapLink + ', ' + wholink,
+                                    maxZoom: 18,
+                                }).addTo(map);
+
+                            var pin = L.icon({
+                                iconUrl: '../../static/dot.png',
+                                iconSize: [10, 10], // size of the icon
+                            });
+
+                            let points = {{ data|safe }};
+
+                            var marker = [];
+                            for (var i = 0; i < points.length; i++) {
+                                marker.push(L.marker([points[i][2], points[i][3]], {
+                                        time: String(points[i][10]),
+                                        icon: pin
+                                    }).bindPopup(
+                                    'ID: ' + points[i][0] + '</br>' +
+                                    'Source: ' + points[i][1] + '</br>' +
+                                    'Admin: ' + points[i][6] + '</br>' +
+                                    'Locality Name: ' + points[i][7] + '</br>' +
+                                    'Locality Quality: ' + points[i][8] + '</br>' +
+                                    'Reporting Date: ' + points[i][10] + '</br>' +
+                                    'Serotype: ' + points[i][12] + '</br>' +
+                                    'Type: ' + points[i][13] + '</br>' +
+                                    'Species: ' + points[i][14] + '</br>'
+                                    )
+                                )
+                            }
+
+                            var point_layer = L.layerGroup(marker);
+                            var sliderControl = L.control.sliderControl({
+                                position: "topright",
+                                layer: point_layer,
+                                range: true
+                            });
+                            map.addControl(sliderControl);
+                            sliderControl.startSlider();
+
+                            var input = document.getElementById('slider');
+                            var label = document.getElementById('variable');
+
+                            //initialize label
+                            label.innerHTML = input.value;
+
+                            function myTimer() {
+                                var newValue = parseInt(input.value) + 1;
+                                input.value = newValue;
+                                label.innerHTML = newValue;
+                            }
+
+                            setInterval(myTimer, 1000);
+
+                        </script>
+                    </div>
+                    <div>Icons made by <a href="https://www.flaticon.com/authors/pixelmeetup" title="Pixelmeetup">Pixelmeetup</a>
+                        from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

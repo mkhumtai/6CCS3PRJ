@@ -1,0 +1,884 @@
+<div class="panel-header panel-header-sm">
+</div>
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <script>
+                    var rs_db = {{ rs_db|safe }};
+                    var hov_db = {{ hov_db|safe }};
+                    var rs_db_an = {{ rs_db_an|safe }};
+                    var hov_db_an = {{ hov_db_an|safe }};
+
+                    var rs_km = {{ rs_km|safe }};
+                    var hov_km = {{ hov_km|safe }};
+                    var rs_km_an = {{ rs_km_an|safe }};
+                    var hov_km_an = {{ hov_km_an|safe }};
+
+                    function getData(temp) {
+                        var latitude = [];
+                        var longitude = [];
+                        var quarters = [];
+                        var hover = [];
+                        var cluster = [];
+                        for (var i = 0; i < temp.length; i++) {
+                            latitude.push(temp[i][2]);
+                            longitude.push(temp[i][3]);
+                            quarters.push(temp[i][11]);
+                            hover.push(temp[i][0].toString() + '<br>' + temp[i][1].toString() + '<br>'
+                                + temp[i][6].toString() + '<br>' + temp[i][5].toString() + '<br>'
+                                + temp[i][4].toString() + '<br>' + temp[i][13].toString());
+                            cluster.push(temp[i][24])
+                        }
+                        return [latitude, longitude, quarters, hover, cluster]
+                    }
+
+                    var rs_db_data = getData(rs_db);
+                    var rs_db_an_data = getData(rs_db_an);
+
+                    var rs_km_data = getData(rs_km);
+                    var rs_km_an_data = getData(rs_km_an);
+
+                    var unique_val = [];
+                    for (var j = 0; j < rs_km_an_data[2].length; j++) {
+                        if (!unique_val.includes(rs_km_an_data[2][j])) {
+                            unique_val.push(rs_km_an_data[2][j]);
+                        }
+                    }
+
+                    function separate_s(quarter, data) {
+                        var lat = [];
+                        var long = [];
+                        var hover = [];
+                        var z = [];
+                        var cluster = [];
+                        for (var i = 0; i < data[2].length; i++) {
+                            if (data[2][i] === quarter) {
+                                lat.push(data[0][i]);
+                                long.push(data[1][i]);
+                                hover.push(data[3][i]);
+                                z.push(1);
+                                cluster.push(data[4][i])
+                            }
+                        }
+                        return [lat, long, hover, z, cluster]
+                    }
+
+                    var init_animal = separate_s(unique_val[0], rs_km_an_data);
+                    var init_human = separate_s(unique_val[0], rs_km_data);
+
+                </script>
+                <div class="card-header">
+                    <h5 class="card-title">
+                        Exploring Avian Influenza H5N1
+                    </h5>
+                </div>
+            </div>
+            <div id="accordion">
+                <div class="card">
+                    <div class="card-header" id="headingTwo">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo"
+                                    aria-expanded="false" aria-controls="collapseTwo">
+                                Current Data - Animal vs. Human infections
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+                                <div id="plotly-div-two"></div>
+                                <script>
+                                    var frames = [];
+                                    var slider_steps = [];
+
+                                    for (var k = 0; k < unique_val.length; k++) {
+                                        var arr_animal = separate_s(unique_val[k], rs_km_an_data);
+                                        var arr_human = separate_s(unique_val[k], rs_km_data);
+                                        var data_animal = {
+                                            lon: arr_animal[1],
+                                            lat: arr_animal[0],
+                                            z: arr_animal[3],
+                                            coloraxis: 'coloraxis',
+                                            hoverinfo: 'skip'
+                                        };
+                                        var data_human = {
+                                            lon: arr_human[1],
+                                            lat: arr_human[0],
+                                            text: arr_human[2],
+                                            marker: {color: "fuchsia", size: 4},
+                                            name: 'Human Infection',
+                                            type: 'scattermapbox'
+                                        };
+                                        frames[k] = {
+                                            data: [data_animal, data_human],
+                                            name: unique_val[k]
+                                        };
+                                        slider_steps.push({
+                                            label: unique_val[k],
+                                            method: "animate",
+                                            args: [[unique_val[k]], {
+                                                mode: "immediate",
+                                                transition: {duration: 300},
+                                                frame: {duration: 300}
+                                            }
+                                            ]
+                                        })
+                                    }
+
+                                    var base_animal = {
+                                        lon: init_animal[1],
+                                        lat: init_animal[0],
+                                        z: init_animal[3],
+                                        radius: 5,
+                                        type: "densitymapbox",
+                                        coloraxis: 'coloraxis',
+                                        hoverinfo: 'skip'
+                                    };
+
+                                    var base_human = {
+                                        lon: init_human[1],
+                                        lat: init_human[0],
+                                        text: init_human[2],
+                                        marker: {color: "fuchsia", size: 4},
+                                        name: 'Human Infection',
+                                        type: 'scattermapbox'
+                                    };
+
+                                    var base = [base_animal, base_human];
+
+                                    var layout = {
+                                        mapbox: {center: {lat: 25, lon: 100}, style: "light", zoom: 1},
+                                        coloraxis: {colorscale: "Viridis"},
+                                        width: 1000,
+                                        height: 600,
+                                        margin: {t: 30, b: 0},
+                                        updatemenus: [{
+                                            x: 0,
+                                            y: 0,
+                                            yanchor: "top",
+                                            xanchor: "right",
+                                            showactive: false,
+                                            direction: "left",
+                                            type: "buttons",
+                                            pad: {"t": 87, "r": 10},
+                                            buttons: [{
+                                                method: "animate",
+                                                args: [null, {
+                                                    fromcurrent: true,
+                                                    transition: {
+                                                        duration: 400,
+                                                    },
+                                                    frame: {
+                                                        duration: 1200
+                                                    }
+                                                }],
+                                                label: "Play"
+                                            }, {
+                                                method: "animate",
+                                                args: [
+                                                    [null],
+                                                    {
+                                                        mode: "immediate",
+                                                        transition: {
+                                                            duration: 0
+                                                        },
+                                                        frame: {
+                                                            duration: 0
+                                                        }
+                                                    }
+                                                ],
+                                                label: "Pause"
+                                            }]
+                                        }],
+                                        sliders: [{
+                                            active: 0,
+                                            steps: slider_steps,
+                                            x: 0.1,
+                                            len: 0.9,
+                                            xanchor: "left",
+                                            y: 0,
+                                            yanchor: "top",
+                                            pad: {t: 50, b: 10},
+                                            currentvalue: {
+                                                visible: true,
+                                                prefix: "Quarter:",
+                                                xanchor: "right",
+                                                font: {
+                                                    size: 15,
+                                                    color: "#666"
+                                                }
+                                            },
+                                            transition: {
+                                                duration: 300,
+                                                easing: "cubic-in-out"
+                                            }
+                                        }]
+                                    };
+
+                                    var config = {mapboxAccessToken: "pk.eyJ1IjoibWFpLWsiLCJhIjoiY2s3bWR1YmZ6MGZsNTNkcGl3cmFybWZ4MSJ9.8POZTW-FYqvHwvgNgJo2qQ"};
+
+                                    Plotly.newPlot('plotly-div-two', base, layout, config).then(function () {
+                                        Plotly.addFrames('plotly-div-two', frames);
+                                    });
+
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingFour">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseFour"
+                                    aria-expanded="false" aria-controls="collapseFour">
+                                Clusters using DBSCAN
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseFour" class="collapse" aria-labelledby="headingFour">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+                                <div id="plotly-div-three"></div>
+                                <script>
+                                    var frames_s = [];
+                                    var slider_steps_s = [];
+
+                                    for (var k = 0; k < unique_val.length; k++) {
+                                        var arr_all = separate_s(unique_val[k], rs_km_data);
+                                        var arr_dbscan = separate_s(unique_val[k], rs_db_data);
+                                        var arr_animal = separate_s(unique_val[k], rs_km_an_data);
+                                        var arr_db_an = separate_s(unique_val[k], rs_db_an_data);
+                                        frames_s[k] = {
+                                            data:
+                                                [{
+                                                    lon: arr_all[1],
+                                                    lat: arr_all[0],
+                                                    z: arr_all[3],
+                                                    text: arr_all[2],
+                                                    mode: 'markers',
+                                                    type: 'scattermapbox',
+                                                    name: 'Human Data',
+                                                    marker: {
+                                                        color: 'rgb(43,107,20)', size: 3
+                                                    }
+                                                },
+                                                    {
+                                                        lon: arr_dbscan[1],
+                                                        lat: arr_dbscan[0],
+                                                        z: arr_dbscan[3],
+                                                        text: arr_dbscan[2],
+                                                        mode: 'markers',
+                                                        type: 'scattermapbox',
+                                                        name: 'Human Cluster Centroid',
+                                                        opacity: 0.5,
+                                                        marker: {
+                                                            color: 'rgb(219, 115, 235)', size: 20
+                                                        }
+                                                    },
+                                                    {
+                                                        lon: arr_animal[1],
+                                                        lat: arr_animal[0],
+                                                        z: arr_animal[3],
+                                                        text: arr_animal[2],
+                                                        mode: 'markers',
+                                                        type: 'scattermapbox',
+                                                        name: 'Animal Data',
+                                                        marker: {color: 'rgb(85,123,246)', size: 3}
+                                                    },
+                                                    {
+                                                        lon: arr_db_an[1],
+                                                        lat: arr_db_an[0],
+                                                        z: arr_db_an[3],
+                                                        text: arr_db_an[2],
+                                                        mode: 'markers',
+                                                        type: 'scattermapbox',
+                                                        name: 'Animal Cluster Centroid',
+                                                        opacity: 0.3,
+                                                        marker: {color: 'rgb(246,106,14)', size: 20}
+                                                    }
+                                                ],
+                                            name: unique_val[k],
+                                        };
+                                        slider_steps_s.push({
+                                            label: unique_val[k],
+                                            method: "animate",
+                                            args: [[unique_val[k]], {
+                                                mode: "immediate",
+                                                transition: {duration: 1000},
+                                                frame: {duration: 200}
+                                            }
+                                            ]
+                                        })
+                                    }
+                                    var init_db = separate_s(unique_val[0], rs_db_data);
+                                    var init_db_an = separate_s(unique_val[0], rs_db_an_data);
+
+                                    var trace_all = {
+                                        lon: init_human[1],
+                                        lat: init_human[0],
+                                        z: init_human[3],
+                                        text: init_human[2],
+                                        mode: 'markers',
+                                        type: 'scattermapbox',
+                                        name: 'Initial Human Data',
+                                        marker: {color: 'rgb(43,107,20)', size: 3}
+                                    };
+
+                                    var trace_animal = {
+                                        lon: init_animal[1],
+                                        lat: init_animal[0],
+                                        z: init_animal[3],
+                                        text: init_animal[2],
+                                        mode: 'markers',
+                                        type: 'scattermapbox',
+                                        name: 'Initial Animal Data',
+                                        marker: {color: 'rgb(85,123,246)', size: 3}
+                                    };
+
+                                    var trace_animal_db = {
+                                        lon: init_db_an[1],
+                                        lat: init_db_an[0],
+                                        z: init_db_an[3],
+                                        text: init_db_an[2],
+                                        opacity: 0.3,
+                                        mode: 'markers',
+                                        type: 'scattermapbox',
+                                        name: 'Animal Cluster Centroid',
+                                        marker: {color: 'rgb(246,106,14)', size: 20}
+                                    };
+
+                                    var trace_dbscan = {
+                                        lon: init_db[1],
+                                        lat: init_db[0],
+                                        z: init_db[3],
+                                        text: init_db[2],
+                                        opacity: 0.5,
+                                        mode: 'markers',
+                                        type: 'scattermapbox',
+                                        name: 'Human Cluster Centroid',
+                                        marker: {color: 'rgb(219, 115, 235)', size: 20}
+                                    };
+
+                                    var layout_s = {
+                                        mapbox: {center: {lat: 25, lon: 100}, style: "light", zoom: 1},
+                                        width: 1000,
+                                        height: 600,
+                                        margin: {t: 30, b: 0},
+                                        updatemenus: [{
+                                            x: 0,
+                                            y: 0,
+                                            yanchor: "top",
+                                            xanchor: "right",
+                                            showactive: false,
+                                            direction: "left",
+                                            type: "buttons",
+                                            pad: {"t": 87, "r": 10},
+                                            buttons: [{
+                                                method: "animate",
+                                                args: [null, {
+                                                    fromcurrent: true,
+                                                    transition: {
+                                                        duration: 400
+                                                    },
+                                                    frame: {
+                                                        duration: 1200
+                                                    }
+                                                }],
+                                                label: "Play"
+                                            }, {
+                                                method: "animate",
+                                                args: [
+                                                    [null],
+                                                    {
+                                                        mode: "immediate",
+                                                        transition: {
+                                                            duration: 0
+                                                        },
+                                                        frame: {
+                                                            duration: 0
+                                                        }
+                                                    }
+                                                ],
+                                                label: "Pause"
+                                            }]
+                                        }],
+                                        sliders: [{
+                                            active: 0,
+                                            steps: slider_steps_s,
+                                            xanchor: "left",
+                                            y: 0,
+                                            yanchor: "top",
+                                            pad: {t: 50, b: 10},
+                                            currentvalue: {
+                                                visible: true,
+                                                prefix: "Quarter: ",
+                                                xanchor: "right",
+                                                font: {
+                                                    size: 15,
+                                                    color: "#666"
+                                                }
+                                            },
+                                            transition: {
+                                                duration: 300,
+                                                easing: "cubic-in-out"
+                                            }
+                                        }]
+                                    };
+
+                                    Plotly.newPlot('plotly-div-three', [trace_all, trace_dbscan, trace_animal, trace_animal_db], layout_s, config).then(function () {
+                                        Plotly.addFrames('plotly-div-three', frames_s);
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingSeven">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseSeven"
+                                    aria-expanded="false" aria-controls="collapseSeven">
+                                Clusters using DBSCAN - Information
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseSeven" class="collapse" aria-labelledby="headingSeven">
+                        <div class="card-body">
+                            <div class="table-responsive" style="height:400px;">
+                                <ul id="dbscan_list">
+                                </ul>
+                                <script>
+                                    var dbscan_list = '<ul>';
+                                    for (var i = 0; i < unique_val.length; i++) {
+                                        var cur_quar = unique_val[i];
+                                        dbscan_list += '<li style="padding-bottom:1em">' + cur_quar;
+                                        var h_index = hov_db.findIndex(e => e.includes(cur_quar));
+                                        if (h_index !== -1) {
+                                            var h_show = hov_db[h_index].toString().replace(cur_quar, '');
+                                            dbscan_list += '<br>' + 'Human: ' + h_show;
+                                        }
+                                        var a_show = hov_db_an[i].replace(cur_quar, '');
+                                        dbscan_list += '<br>' + 'Animal: ' + a_show;
+                                    }
+                                    dbscan_list += '</ul>';
+                                    document.getElementById("dbscan_list").innerHTML = dbscan_list;
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingFour">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseFive"
+                                    aria-expanded="false" aria-controls="collapseFive">
+                                Clusters using KMeans
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseFive" class="collapse" aria-labelledby="headingFive">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+                                <div id="plotly-div-four"></div>
+                                <script>
+                                    var scl = [[0, 'rgb(204, 0, 0)'], [0.15, 'rgb(255, 255, 0)'], [0.3, 'rgb(255, 128, 0)'],
+                                        [0.45, 'rgb(0, 204, 0)'], [0.6, 'rgb(0, 102, 204)'], [0.75, 'rgb(204, 0, 204)'],
+                                        [1, 'rgb(124,3,232)']];
+
+                                    var hover_km = {{hov_km|safe}};
+
+                                    var frames_km = [];
+                                    var slider_steps_km = [];
+
+                                    for (var k = 0; k < unique_val.length; k++) {
+                                        var arr_one = separate_s(unique_val[k], rs_km_data);
+                                        var arr_two = separate_s(unique_val[k], rs_km_an_data);
+                                        frames_km[k] = {
+                                            data:
+                                                [{
+                                                    lon: arr_one[1],
+                                                    lat: arr_one[0],
+                                                    z: arr_one[3],
+                                                    text: arr_one[2],
+                                                    mode: 'markers',
+                                                    type: 'scattermapbox',
+                                                    name: 'Human Clusters',
+                                                    marker: {
+                                                        color: arr_one[4],
+                                                        colorscale: scl,
+                                                        autocolorscale: false,
+                                                        opacity: 0.7,
+                                                        size: 5,
+                                                        cmin: 0,
+                                                        cmax: 7,
+                                                        colorbar: {
+                                                            thickness: 10,
+                                                            titleside: 'right',
+                                                            outlinecolor: 'rgba(68,68,68,0)',
+                                                            ticks: 'outside',
+                                                            ticklen: 3,
+                                                            shoticksuffix: 'last',
+                                                            dtick: 1
+                                                        }
+                                                    }
+                                                },
+                                                    {
+                                                        lon: arr_two[1],
+                                                        lat: arr_two[0],
+                                                        z: arr_two[3],
+                                                        text: arr_two[2],
+                                                        mode: 'markers',
+                                                        type: 'scattermapbox',
+                                                        name: 'Animal Clusters',
+                                                        marker: {
+                                                            color: arr_two[4],
+                                                            colorscale: scl,
+                                                            autocolorscale: false,
+                                                            opacity: 0.7,
+                                                            size: 5,
+                                                            cmin: 0,
+                                                            cmax: 7,
+                                                            colorbar: {
+                                                                thickness: 10,
+                                                                titleside: 'right',
+                                                                outlinecolor: 'rgba(68,68,68,0)',
+                                                                ticks: 'outside',
+                                                                ticklen: 3,
+                                                                shoticksuffix: 'last',
+                                                                dtick: 1
+                                                            }
+                                                        }
+                                                    },
+                                                ],
+                                            name: unique_val[k],
+                                        };
+                                        slider_steps_km.push({
+                                            label: unique_val[k],
+                                            method: "animate",
+                                            args: [[unique_val[k]], {
+                                                mode: "immediate",
+                                                transition: {duration: 1000},
+                                                frame: {duration: 200}
+                                            }
+                                            ]
+                                        })
+                                    }
+
+                                    var trace_one = {
+                                        lon: init_human[1],
+                                        lat: init_human[0],
+                                        z: init_human[3],
+                                        text: init_human[2],
+                                        mode: 'markers',
+                                        type: 'scattermapbox',
+                                        name: 'Human Clusters',
+                                        marker: {
+                                            color: init_human[4],
+                                            colorscale: scl,
+                                            opacity: 0.7,
+                                            size: 5,
+                                            cmin: 0,
+                                            cmax: 7,
+                                            colorbar: {
+                                                thickness: 10,
+                                                titleside: 'right',
+                                                outlinecolor: 'rgba(68,68,68,0)',
+                                                ticks: 'outside',
+                                                ticklen: 3,
+                                                shoticksuffix: 'last',
+                                                dtick: 1
+                                            }
+
+                                        }
+                                    };
+
+                                    var trace_two = {
+                                        lon: init_animal[1],
+                                        lat: init_animal[0],
+                                        z: init_animal[3],
+                                        text: init_animal[2],
+                                        mode: 'markers',
+                                        type: 'scattermapbox',
+                                        name: 'Animal Clusters',
+                                        marker: {
+                                            color: init_animal[4],
+                                            colorscale: scl,
+                                            autocolorscale: false,
+                                            opacity: 0.7,
+                                            size: 5,
+                                            cmin: 0,
+                                            cmax: 7,
+                                            colorbar: {
+                                                thickness: 10,
+                                                titleside: 'right',
+                                                outlinecolor: 'rgba(68,68,68,0)',
+                                                ticks: 'outside',
+                                                ticklen: 3,
+                                                shoticksuffix: 'last',
+                                                dtick: 1
+                                            }
+
+                                        }
+                                    };
+
+                                    var layout_km = {
+                                        mapbox: {center: {lat: 25, lon: 100}, style: "light", zoom: 1},
+                                        coloraxis: {colorscale: "Viridis"},
+                                        width: 1000,
+                                        height: 600,
+                                        margin: {t: 30, b: 0},
+                                        updatemenus: [{
+                                            x: 0,
+                                            y: 0,
+                                            yanchor: "top",
+                                            xanchor: "right",
+                                            showactive: false,
+                                            direction: "left",
+                                            type: "buttons",
+                                            pad: {"t": 87, "r": 10},
+                                            buttons: [{
+                                                method: "animate",
+                                                args: [null, {
+                                                    fromcurrent: true,
+                                                    transition: {
+                                                        duration: 400,
+                                                    },
+                                                    frame: {
+                                                        duration: 1200
+                                                    }
+                                                }],
+                                                label: "Play"
+                                            }, {
+                                                method: "animate",
+                                                args: [
+                                                    [null],
+                                                    {
+                                                        mode: "immediate",
+                                                        transition: {
+                                                            duration: 0
+                                                        },
+                                                        frame: {
+                                                            duration: 0
+                                                        }
+                                                    }
+                                                ],
+                                                label: "Pause"
+                                            }]
+                                        }],
+                                        sliders: [{
+                                            active: 0,
+                                            steps: slider_steps_km,
+                                            xanchor: "left",
+                                            y: 0,
+                                            yanchor: "top",
+                                            pad: {t: 50, b: 10},
+                                            currentvalue: {
+                                                visible: true,
+                                                prefix: "Quarter: ",
+                                                xanchor: "right",
+                                                font: {
+                                                    size: 15,
+                                                    color: "#666"
+                                                }
+                                            },
+                                            transition: {
+                                                duration: 300,
+                                                easing: "cubic-in-out"
+                                            }
+                                        }]
+                                    };
+
+                                    Plotly.newPlot('plotly-div-four', [trace_one, trace_two], layout_km, config).then(function () {
+                                        Plotly.addFrames('plotly-div-four', frames_km);
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingSix">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseSix"
+                                    aria-expanded="false" aria-controls="collapseSix">
+                                Clusters using K-Means - Information
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseSix" class="collapse" aria-labelledby="headingSix">
+                        <div class="card-body">
+                            <div class="table-responsive" style="height:400px;">
+                                <ul id="kmeans_list">
+                                </ul>
+                                <script>
+                                    var kmeans_list = '<ul>';
+                                    for (var i = 0; i < unique_val.length; i++) {
+                                        var cur_quar = unique_val[i];
+                                        kmeans_list += '<li style="padding-bottom:1em">' + cur_quar;
+                                        var hu_index = hov_km.findIndex(e => e.includes(cur_quar));
+                                        if (hu_index !== -1) {
+                                            var h_show = hov_km[hu_index].toString().replace(cur_quar, '');
+                                            kmeans_list += '<br>' + 'Human: ' + h_show;
+                                        }
+
+                                        var an_show = hov_km_an[i].toString().replace(cur_quar, '');
+                                        kmeans_list += '<br>' + 'Animal: ' + an_show;
+
+                                    }
+                                    kmeans_list += '</ul>';
+                                    document.getElementById("kmeans_list").innerHTML = kmeans_list;
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne"
+                                    aria-expanded="true" aria-controls="collapseOne">
+                                Epidemic Curve
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+                                <div id="plotly-div"></div>
+                                <script>
+                                    var all = {{ info|safe }};
+                                    var human = {{ human|safe }};
+                                    var animals = {{ animal|safe }};
+
+                                    function getData(temp, region) {
+                                        var quar = [];
+                                        var count = [];
+                                        var i;
+                                        for (i = 0; i < temp.length; i++) {
+                                            if (region === 'skip') {
+                                                quar.push(temp[i][0]);
+                                                count.push(temp[i][1])
+                                            } else if (temp[i][2] === region) {
+                                                quar.push(temp[i][0]);
+                                                count.push(temp[i][1])
+                                            }
+                                        }
+                                        return [quar, count]
+                                    }
+
+                                    var asia = getData(all, 'Asia');
+                                    var euro = getData(all, 'Europe');
+                                    var africa = getData(all, 'Africa');
+                                    var ocean = getData(all, 'Oceania');
+                                    var americas = getData(all, 'Americas');
+
+                                    trace_asia = {
+                                        name: 'Asia',
+                                        line: {shape: 'spline'},
+                                        mode: 'lines',
+                                        type: 'scatter',
+                                        visible: "legendonly",
+                                        x: asia[0],
+                                        y: asia[1]
+                                    };
+                                    trace_euro = {
+                                        name: 'Europe',
+                                        line: {shape: 'spline'},
+                                        mode: 'lines',
+                                        type: 'scatter',
+                                        visible: "legendonly",
+                                        x: euro[0],
+                                        y: euro[1]
+                                    };
+                                    trace_africa = {
+                                        name: 'Africa',
+                                        line: {shape: 'spline'},
+                                        mode: 'lines',
+                                        type: 'scatter',
+                                        visible: "legendonly",
+                                        x: africa[0],
+                                        y: africa[1]
+                                    };
+                                    trace_oceania = {
+                                        name: 'Oceania',
+                                        line: {shape: 'spline'},
+                                        mode: 'lines',
+                                        type: 'scatter',
+                                        visible: "legendonly",
+                                        x: ocean[0],
+                                        y: ocean[1]
+                                    };
+                                    trace_americas = {
+                                        name: 'Americas',
+                                        line: {shape: 'spline'},
+                                        mode: 'lines',
+                                        type: 'scatter',
+                                        x: americas[0],
+                                        y: americas[1]
+                                    };
+                                    var line1 = getData(all, 'skip');
+                                    var line2 = getData(human, 'skip');
+                                    var line3 = getData(animals);
+
+                                    trace1 = {
+                                        name: 'All cases',
+                                        line: {shape: 'spline'},
+                                        mode: 'lines',
+                                        type: 'scatter',
+                                        x: line1[0],
+                                        y: line1[1]
+                                    };
+                                    trace2 = {
+                                        name: 'All Human cases',
+                                        line: {shape: 'spline'},
+                                        mode: 'lines',
+                                        type: 'scatter',
+                                        x: line2[0],
+                                        y: line2[1]
+                                    };
+                                    trace3 = {
+                                        name: 'Non-human cases',
+                                        line: {shape: 'spline'},
+                                        mode: 'lines',
+                                        type: 'scatter',
+                                        x: line3[0],
+                                        y: line3[1]
+                                    };
+                                    layout = {
+                                        width: 800,
+                                        xaxis: {
+                                            type: 'quarter',
+                                            range: ['2017Q1', '2020Q2'],
+                                            title: 'Quarters',
+                                            autorange: true
+                                        },
+                                        yaxis: {
+                                            type: 'linear',
+                                            dtick: 200,
+                                            title: 'Individuals diagnosed',
+                                            tickmode: 'linear',
+                                            autorange: true
+                                        },
+                                        height: 600,
+                                        autosize: true
+                                    };
+                                    var data = [trace1, trace2, trace_asia, trace_africa, trace_americas, trace_euro, trace_oceania];
+                                    Plotly.plot('plotly-div', {
+                                        data: data,
+                                        layout: layout
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

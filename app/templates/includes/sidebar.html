@@ -1,0 +1,85 @@
+<!-- License: MIT, Copyright (c) 2019 - present AppSeed.us -->
+<div class="sidebar" data-color="orange">
+    <div class="logo">
+        <a href="https://github.com/app-generator/flask-now-ui-dashboard" class="simple-text logo-mini">
+
+        </a>
+        <a href="https://github.com/app-generator/flask-now-ui-dashboard" class="simple-text logo-normal">
+
+        </a>
+    </div>
+    <div class="sidebar-wrapper" id="sidebar-wrapper">
+        <ul class="nav">
+            <li class="active ">
+                <a href="/">
+                    <i class="now-ui-icons design_app"></i>
+                    <p>Dashboard</p>
+                </a>
+            </li>
+
+
+            {% if current_user.is_authenticated %}
+
+                <li>
+                    <a href="/analysis.html">
+                        <i class="now-ui-icons business_bulb-63"></i>
+                        <p>H5N1 - Analysis</p>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/query.html">
+                        <i class="now-ui-icons files_single-copy-04"></i>
+                        <p>Query Data</p>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/allTime.html">
+                        <i class="now-ui-icons location_world"></i>
+                        <p>View All Time</p>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/viewEmpres.html">
+                        <i class="now-ui-icons files_box"></i>
+                        <p>View data</p>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/importData.html">
+                        <i class="now-ui-icons arrows-1_cloud-upload-94"></i>
+                        <p>Import Data</p>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/export.html">
+                        <i class="now-ui-icons arrows-1_cloud-download-93"></i>
+                        <p>Export Data</p>
+                    </a>
+                </li>
+
+                <li>
+                    <a href={{ url_for('logout') }}>
+                        <i class="now-ui-icons media-1_button-power"></i>
+                        <p>Logout</p>
+                    </a>
+                </li>
+
+            {% else %}
+
+                <li>
+                    <a href={{ url_for('login') }}>
+                        <i class="now-ui-icons business_badge"></i>
+                        <p>Login</p>
+                    </a>
+                </li>
+
+            {% endif %}
+        </ul>
+    </div>
+</div>
+

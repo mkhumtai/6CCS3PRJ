@@ -1,0 +1,90 @@
+.card{
+    border: 0;
+    border-radius: $border-radius-small;
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+    box-shadow: $box-shadow;
+
+    [data-notify="container"].alert {
+      min-width: auto;
+      left: unset !important;
+      right: unset !important;
+    }
+
+    .card-body{
+        padding: 15px 15px 10px 15px;
+
+        &.table-full-width{
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+
+    .card-header{
+      &:not([data-background-color]){
+        background-color: transparent;
+      }
+      padding: 15px 15px 0;
+      border: 0;
+
+      .card-title{
+          margin-top: 10px;
+      }
+    }
+
+    .map{
+        border-radius: $border-radius-small;
+
+    }
+
+    &[data-background-color="orange"]{
+        background-color: $primary-color;
+
+        .card-header{
+            background-color: $primary-color;
+        }
+
+        .card-footer{
+        }
+    }
+
+    &[data-background-color="red"]{
+        background-color: $danger-color;
+    }
+
+    &[data-background-color="yellow"]{
+        background-color: $warning-color;
+    }
+
+    &[data-background-color="blue"]{
+        background-color: $info-color;
+    }
+
+    &[data-background-color="green"]{
+        background-color: $success-color;
+    }
+
+    .image{
+        overflow: hidden;
+        height: 200px;
+        position: relative;
+    }
+
+    label{
+        font-size: $font-size-small;
+        margin-bottom: 5px;
+        color: $dark-gray;
+    }
+
+    .card-footer{
+        background-color: transparent;
+        border: 0;
+
+
+        .btn{
+            margin: 0;
+        }
+    }
+}

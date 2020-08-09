@@ -1,0 +1,339 @@
+<!-- End Navbar -->
+<div class="panel-header panel-header-sm">
+</div>
+
+<div class="content">
+    <!-- Reported Cases and Common Serotypes -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card  card-tasks">
+                <div class="card-header ">
+                    <h4 class="card-title">Reported Cases in the Past 10 Months</h4>
+                </div>
+                <div class="card-body ">
+                    <div class="chart-area">
+                        <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js'></script>
+                        <canvas id="line-chart" width="800" height="450"></canvas>
+                        <script>
+                            var dates = JSON.parse('{{ dates|safe }}');
+                            label = [];
+                            value = [];
+                            for (key in dates) {
+                                if (dates.hasOwnProperty(key)) {
+                                    var temp = dates[key];
+                                    label.push(temp[0]);
+                                    value.push(temp[1])
+                                }
+                            }
+                            new Chart(document.getElementById("line-chart"), {
+                                type: 'line',
+                                data: {
+                                    labels: label,
+                                    datasets: [{
+                                        data: value,
+                                        borderColor: "#7f9cc6",
+                                        fill: false
+                                    }]
+                                },
+                                options: {
+                                    title: {
+                                        display: true,
+                                    },
+                                    legend: {
+                                        display: false
+                                    },
+                                    tooltips: {
+                                        callbacks: {
+                                            label: function (tooltipItem) {
+                                                return tooltipItem.yLabel;
+                                            }
+                                        }
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: 'No. of reported cases'
+                                            }
+                                        }],
+                                        xAxes: [{
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: 'Past 10 Months'
+                                            }
+                                        }]
+                                    }
+                                }
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">No. of Cases by quarter</h4>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js'></script>
+                        <canvas id="line-chart-spe" width="800" height="450"></canvas>
+                        <script>
+                            var spe = JSON.parse('{{ quarters|safe }}');
+                            label = [];
+                            value = [];
+                            for (key in spe) {
+                                if (spe.hasOwnProperty(key)) {
+                                    var temp = spe[key];
+                                    label.push(temp[0]);
+                                    value.push(temp[1])
+                                }
+                            }
+                            var speciesType = new Chart(document.getElementById("line-chart-spe"), {
+                                type: 'line',
+                                data: {
+                                    labels: label,
+                                    datasets: [
+                                        {
+                                            data: value,
+                                            borderColor: "#7f9cc6",
+                                            fill: false
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    title: {
+                                        display: true,
+                                    },
+                                    legend: {
+                                        display: false
+                                    },
+                                    tooltips: {
+                                        callbacks: {
+                                            label: function (tooltipItem) {
+                                                return tooltipItem.yLabel;
+                                            }
+                                        }
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: 'No. of cases'
+                                            }
+                                        }],
+                                        xAxes: [{
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: 'Quarters'
+                                            }
+                                        }]
+                                    }
+                                }
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Region cases and Species Type -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card  card-tasks">
+                <div class="card-header ">
+                    <h4 class="card-title">No. of Cases for each region</h4>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js'></script>
+                        <canvas id="bar-chart-reg" width="800" height="450"></canvas>
+                        <script>
+                            var region = JSON.parse('{{ region|safe }}');
+                            label = [];
+                            value = [];
+                            for (key in region) {
+                                if (region.hasOwnProperty(key)) {
+                                    var temp = region[key];
+                                    label.push(temp[0]);
+                                    value.push(temp[1])
+                                }
+                            }
+                            var regions = new Chart(document.getElementById("bar-chart-reg"), {
+                                type: 'bar',
+                                data: {
+                                    labels: label,
+                                    datasets: [
+                                        {
+                                            backgroundColor: "#7f9cc6",
+                                            data: value
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    legend: {display: false},
+                                    title: {
+                                        display: true,
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: 'No. of cases'
+                                            }
+                                        }],
+                                        xAxes: [{
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: 'Region'
+                                            }
+                                        }]
+                                    }
+                                }
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Most Common Serotypes</h4>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js'></script>
+                        <canvas id="bar-chart-sero" width="800" height="450"></canvas>
+                        <script>
+                            var seros = JSON.parse('{{ seros|safe }}');
+                            for (var i = 0; i < seros.length; i++) {
+                                if (seros[i][1] < 100) {
+                                    delete seros[i];
+                                }
+                            }
+                            label = [];
+                            value = [];
+                            for (key in seros) {
+                                if (seros.hasOwnProperty(key)) {
+                                    var temp = seros[key];
+                                    label.push(temp[0]);
+                                    value.push(temp[1])
+                                }
+                            }
+                            var serotypes = new Chart(document.getElementById("bar-chart-sero"), {
+                                type: 'bar',
+                                data: {
+                                    labels: label,
+                                    datasets: [
+                                        {
+                                            backgroundColor: "#7f9cc6",
+                                            data: value
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    legend: {display: false},
+                                    title: {
+                                        display: true,
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: 'No. of cases'
+                                            }
+                                        }],
+                                        xAxes: [{
+                                            scaleLabel: {
+                                                display: true,
+                                                labelString: 'Serotypes'
+                                            }
+                                        }]
+                                    }
+                                }
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WHO Texts -->
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card card-chart">
+                <div class="card-header">
+                    <h4 class="card-title">Avian Influenza</h4>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <p>
+                            Influenza viruses, with the vast silent reservoir in aquatic birds, are impossible to
+                            eradicate.
+                            Zoonotic influenza infection in humans will continue to occur. To minimize public health
+                            risk, quality surveillance in both animal and human populations,
+                            thorough investigation of every human infection and risk-based pandemic planning are
+                            essential.
+                        </p>
+                        <br>
+                        <a href="https://www.who.int/news-room/fact-sheets/detail/influenza-(avian-and-other-zoonotic)">World
+                            Health Organization</a>
+                    </div>
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="card card-chart">
+                <div class="card-header">
+                    <h4 class="card-title">Influenza Type A</h4>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <p>
+                            Influenza type A viruses are of most significance to public health due to their potential to
+                            cause an influenza pandemic.
+                            Influenza type A viruses are classified into subtypes according to the combinations of
+                            different virus surface proteins hemagglutinin (HA) and neuraminidase (NA).
+                            So far there are 18 different hemagglutinin subtypes and 11 different neuraminidase
+                            subtypes.
+                        </p>
+                        <a href="https://www.who.int/news-room/fact-sheets/detail/influenza-(avian-and-other-zoonotic)">World
+                            Health Organization</a>
+                    </div>
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="card card-chart">
+                <div class="card-header">
+                    <h4 class="card-title">H5N1 Outbreak</h4>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <p>
+                            In 1997, human infections with the HPAI A(H5N1) virus were reported during an outbreak in
+                            poultry in Hong Kong SAR, China.
+                            Since 2003, this avian virus has spread from Asia to Europe and Africa, and has become
+                            endemic in poultry populations in some countries.
+                            Outbreaks have resulted in millions of poultry infections, several hundred human cases, and
+                            many human deaths.
+                        </p>
+                        <a href="https://www.who.int/news-room/fact-sheets/detail/influenza-(avian-and-other-zoonotic)">World
+                            Health Organization</a>
+                    </div>
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
