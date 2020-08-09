@@ -1,0 +1,18 @@
+selenium
+pytest
+wtforms
+email-validator == 1.0.5
+config
+geopy
+shapely
+numpy
+pandas
+scikit-learn
+flask
+flask_login
+flask_migrate
+flask_wtf
+flask_sqlalchemy
+flask_bcrypt
+gunicorn
+rq
