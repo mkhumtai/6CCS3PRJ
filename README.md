@@ -3,6 +3,7 @@
 #### Author: Mananchaya Khumtai
 #### Supervisor: Dr. Kathleen Steinhöfel
 #### Student ID: 1741542
+#### Final Grade: 82/100
 
 <br />
 
